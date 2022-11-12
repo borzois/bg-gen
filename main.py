@@ -1,6 +1,7 @@
 import numpy as np
 import png
 import numpy
+from colorthief import ColorThief
 
 
 def load_image(file: str):
@@ -11,6 +12,16 @@ def load_image(file: str):
     img_3d = numpy.reshape(img_2d, (rows, cols, 4))
 
     return cols, rows, img_3d, meta
+
+
+def get_colors(file: str):
+    ct = ColorThief('./in/m.png')
+    ct_pal = ct.get_palette(color_count=2)
+
+    color1 = list(ct_pal[0]) + [255]
+    color2 = list(ct_pal[1]) + [255]
+
+    return (color1, color2)
 
 
 def generate_background(pattern, pal: tuple, image_3d):
@@ -40,13 +51,21 @@ def replace_background(img, bg):
 
 
 if __name__ == '__main__':
-    col_count, row_count, image_3d, metadata = load_image('./in/smoke.png')
+    col_count, row_count, image_3d, metadata = load_image('./in/m.png')
+    bg_solid = [[0, 0], [0, 0]]
     bg_dots = [[1, 0], [0, 0]]              # 0 bg; 1 fg
     bg_lines = [[1, 0, 0], [1, 0, 1], [0, 0, 1]]
     bg_check = [[1, 0], [0, 1]]
-    palette = ([66, 12, 8, 255], [145, 45, 25, 255])  # bg; fg
+    bg_dots_big = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+    bg_dots_huge = [
+        [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0],
+        ]
 
-    background = generate_background(bg_check, palette, image_3d)
+    pal = get_colors('./in/m.png')
+    print(pal)
+
+    background = generate_background(bg_dots_huge, pal, image_3d)
 
     replace_background(image_3d, background)
 
