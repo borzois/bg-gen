@@ -3,7 +3,7 @@ from bggenerator.bg_generator import BGGen
 if __name__ == '__main__':
 
 
-    bg_gen = BGGen('./in/junko2022.png')
+    bg_gen = BGGen('media/uploads/junko2022.png')
     background = bg_gen.replace_background(bg_dots_huge)
 
 
